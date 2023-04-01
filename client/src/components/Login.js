@@ -52,7 +52,7 @@ const Login = () => {
             // console.log("user login succesfully done");
 
 
-            const data = await fetch("/login",{
+            const data = await fetch("http://localhost:8009/login",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
