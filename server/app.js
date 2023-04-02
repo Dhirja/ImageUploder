@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
 require("./db/conn");
@@ -16,7 +15,7 @@ app.use(express.json());
 app.use(cookiParser());
 app.use(cors());
 app.use(router);
-
+app.use("/uploads",express.static("./uploads"));
 
 app.listen(port,()=>{
     console.log(`server start at port no : ${port}`);

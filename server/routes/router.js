@@ -3,6 +3,9 @@ const router = new express.Router();
 const userdb = require("../models/userSchema");
 var bcrypt = require("bcryptjs");
 const authenticate = require("../middleware/authenticate");
+const multer = require("multer");
+const imagesdb =  require('../models/imageSchema')
+const moment = require("moment")
 
 
 // for user registration
@@ -43,11 +46,7 @@ router.post("/register", async (req, res) => {
 
 });
 
-
-
-
 // user Login
-
 router.post("/login", async (req, res) => {
     // console.log(req.body);
 
@@ -91,8 +90,6 @@ router.post("/login", async (req, res) => {
     }
 });
 
-
-
 // user valid
 router.get("/validuser",authenticate,async(req,res)=>{
     try {
@@ -103,9 +100,7 @@ router.get("/validuser",authenticate,async(req,res)=>{
     }
 });
 
-
 // user logout
-
 router.get("/logout",authenticate,async(req,res)=>{
     try {
         req.rootUser.tokens =  req.rootUser.tokens.filter((curelem)=>{
@@ -123,19 +118,90 @@ router.get("/logout",authenticate,async(req,res)=>{
     }
 })
 
+const imgconfig = multer.diskStorage({
+    destination:(req,file,callback)=>{
+        callback(null,"./uploads")
+    },
+    filename:(req,file,callback)=>{
+        callback(null,`imgae-${Date.now()}. ${file.originalname}`)
+    }
+})
+
+
+// img filter
+const isImage = (req,file,callback)=>{
+    if(file.mimetype.startsWith("image")){
+        callback(null,true)
+    }else{
+        callback(new Error("only images is allowd"))
+    }
+}
+
+const upload = multer({
+    storage:imgconfig,
+    fileFilter:isImage
+});
+
+// image register
+router.post("/add",upload.single("photo"),async(req,res)=>{
+
+    const {filename} = req.file;
+
+    const {fname} = req.body;
+
+    if(!fname || !filename){
+        res.status(401).json({status:401,message:"fill all the data"})
+    }
+
+    try {
+
+        const date = moment(new Date()).format("YYYY-MM-DD");
+
+        const imagedata = new imagesdb({
+            fname:fname,
+            imgpath:filename,
+            date:date
+        });
+
+        const finaldata = await imagedata.save();
+
+        res.status(201).json({status:201,finaldata});
+
+    } catch (error) {
+        res.status(401).json({status:401,error})
+    }
+});
+
+
+// user image get
+router.get("/getdata",async(req,res)=>{
+    try {
+        const getUser = await imagesdb.find();
+
+        res.status(201).json({status:201,getUser})
+    } catch (error) {
+        res.status(401).json({status:401,error})
+    }
+});
+
+
+// delete image data
+router.delete("/:id",async(req,res)=>{
+
+    try {
+        const {id} = req.params;
+
+        const dltUser = await images.findByIdAndDelete({_id:id});
+
+        res.status(201).json({status:201,dltUser});
+
+    } catch (error) {
+        res.status(401).json({status:401,error})
+    }
+
+})
 
 module.exports = router;
-
-
-
-// 2 way connection
-// 12345 ---> e#@$hagsjd
-// e#@$hagsjd -->  12345
-
-// hashing compare
-// 1 way connection
-// 1234 ->> e#@$hagsjd
-// 1234->> (e#@$hagsjd,e#@$hagsjd)=> true
 
 
 

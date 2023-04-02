@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import { Routes, Route, useNavigate } from "react-router-dom"
 import { useEffect, useContext, useState } from "react";
 import { LoginContext } from "./components/ContextProvider/Context";
+import Addfile from "./components/Addfile";
 
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/dash" element={<Dashboard />} />
+              <Route path='/imageupload' element={ <Addfile />} />
               <Route path="*" element={<Error />} />
             </Routes>
           </>
