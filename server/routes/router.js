@@ -191,7 +191,7 @@ router.delete("/:id",async(req,res)=>{
     try {
         const {id} = req.params;
 
-        const dltUser = await images.findByIdAndDelete({_id:id});
+        const dltUser = await imagesdb.findByIdAndDelete({_id:id});
 
         res.status(201).json({status:201,dltUser});
 

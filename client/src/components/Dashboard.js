@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LoginContext } from './ContextProvider/Context';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Grid, Card, CardMedia, CardContent, Typography } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material';
 import axios from "axios";
@@ -85,13 +86,16 @@ const Dashboard = () => {
         <>
             {
                 data ? 
+                <>
+                <Button onClick={()=>{history('/imageupload')}} variant="contained" style={{float:"right"}}>Upload Image</Button>
                 <Grid container spacing={2}>
+                    
                 {imgdatas.map((item) => (
-                  <Grid item xs={12} sm={6} md={4} key={item._id}>
-                    <Card>
+                  <Grid item xs={12} sm={6} md={4} key={item.id}>
+                    <Card sx={{ maxWidth: 330 , p: 1, m:1 }}>
                       <CardMedia
                         component="img"
-                        height="180"
+                        height="160"
                         width='80'
                         image={`/uploads/${item.imgpath}`}
                         alt={item.name}
@@ -100,12 +104,13 @@ const Dashboard = () => {
                         <Typography variant="h5" component="h2">
                           {item.fname}
                         </Typography>
-                        <Button variant="danger" className='col-lg-6 text-center' onClick={() => dltUser(item._id)}>Delete</Button>
+                        <Button  variant="outlined" startIcon={<DeleteIcon />} onClick={() => dltUser(item._id)}>Delete</Button>
                       </CardContent>
                     </Card>
                   </Grid>
                 ))}
               </Grid>
+              </>
 
                 : 
                 <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center", height: "100vh" }}>
